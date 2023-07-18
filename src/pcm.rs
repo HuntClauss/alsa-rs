@@ -177,6 +177,15 @@ impl PCM {
         self.recover(err.errno() as c_int, silent)
     }
 
+    pub fn forward(&self, frames: usize) -> Result<Frames> {
+        acheck!(snd_pcm_forward(self.0, frames as alsa::snd_pcm_uframes_t))
+    }
+
+    pub fn forwardable(&self) -> Result<Frames> {
+        acheck!(snd_pcm_forwardable(self.0))
+    }
+
+
     pub fn wait(&self, timeout_ms: Option<u32>) -> Result<bool> {
         acheck!(snd_pcm_wait(self.0, timeout_ms.map(|x| x as c_int).unwrap_or(-1))).map(|i| i == 1) }
 
